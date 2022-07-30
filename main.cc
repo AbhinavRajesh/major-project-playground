@@ -2,7 +2,7 @@
 #include<vector>
 
 // Utils functions
-#include "HeaderFiles/MyUtilsFunctions.h"
+#include "headers/utils.h"
 
 int main() {
     // Checking if the header utils file works

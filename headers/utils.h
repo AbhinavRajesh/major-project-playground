@@ -1,9 +1,9 @@
+#ifndef UTILS_H
+#define UTILS_H
+
 #include<cmath>
 #include<tuple>
 #include<vector>
-
-#ifndef MYUTILSFUNCTIONS_H
-#define MYUTILSFUNCTIONS_H
 
 float distance(float p1[3], float p2[3]) {
     float x = pow(p1[0] - p2[0], 2);
@@ -102,4 +102,4 @@ std::vector<std::vector<float>> get_z_rotation_matrix(float theta) {
     };
 }
 
-#endif
+#endif 
