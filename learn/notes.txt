@@ -1,0 +1,22 @@
+SERVER: socket() -> bind() -> listen() -> accept()
+CLIENT: socket() -> connect()
+
+1) Socket Creation
+socket(domain, type, protocol);
+    * domain: 
+        - IPV4 (AF_INET)
+        - IPV6 (AF_INET6)
+    * type:
+        - TCP (SOCK_STREAM)
+        - UDP (SOCK_DGRAM)
+    * protocol:
+        - IP (0)
+
+2) Bind
+bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
+3) Listen
+listen(int sockfd, int backlog);
+
+4) Accept
+accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
