@@ -3,7 +3,7 @@
 - Windows
 
 ```cpp
-g++ chat.cpp -lws2_32
+g++ server.cc -lws2_32
 ```
 
 # major-project
