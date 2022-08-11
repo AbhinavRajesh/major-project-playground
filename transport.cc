@@ -1,14 +1,18 @@
 #include <iostream>
+
 #include <winsock.h> // For Windows
+// #include <WS2tcpip.h>
+
 // #include <sys/socket.h> // For Linux
 #include <sys/types.h>
+
 using namespace std;
 
 #define PORT 8080
 
 int main()
 {
-    struct sockaddr_in address;
+    struct sockaddr_in address{};
 
     // Creating socket file descriptor
     // IPV4 - TCP
@@ -24,7 +28,7 @@ int main()
     }
 
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_addr.S_un.S_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
 
     // Binding Socket to PORT
