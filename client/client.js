@@ -9,7 +9,7 @@ let socket = new WebSocket(URL);
 socket.onopen = (e) => {
   console.log("Socket connected to CPP server");
   console.log('Sending "Hello" to server');
-  socket.send("Hello");
+  socket.send("Hi, I'm Client");
 };
 
 socket.onmessage = (e) => {

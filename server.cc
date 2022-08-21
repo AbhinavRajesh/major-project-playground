@@ -81,24 +81,36 @@ int main()
     {
         // Make sure the user has typed in something
         ZeroMemory(buf, 4096);
-        int bytesReceived = recv(clientSocket, buf, 4096, 0);
-        if (bytesReceived > 0)
+        int recvResult = recv(clientSocket, buf, 4096, 0);
+        if (recvResult > 0)
         {
-            string response = string(buf, 0, bytesReceived);
+            string response = string(buf, 0, recvResult);
             // Echo response to console
-            cout << "\nSERVER> " << response << endl;
+            printf("\nSUCCESS: Recieving from client: %d bytes", recvResult);
             // Return the same message back
-            int sendResult = send(clientSocket, response.c_str(), response.size() + 1, 0);
-            if (sendResult != SOCKET_ERROR)
+            int sendResult = send(clientSocket, "Hi, I'm server", response.size() + 1, 0);
+            if (sendResult == SOCKET_ERROR)
             {
-                cout << "Error while sending back the data!";
+                printf("\nFAILED: Sending to client: %d", WSAGetLastError());
+                closesocket(clientSocket);
+                WSACleanup();
+                return 0;
             }
+            else
+            {
+                printf("\nSUCCESS: Sending to client: %d bytes", sendResult);
+            }
+        }
+        else if (recvResult != 0)
+        {
+            printf("\nFAILED: Recieving from client: %d", WSAGetLastError());
+            closesocket(clientSocket);
+            WSACleanup();
+            return 0;
         }
     } while (true);
 
     closesocket(clientSocket);
-
     WSACleanup();
-
     return 0;
 }
