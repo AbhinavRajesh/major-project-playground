@@ -17,8 +17,8 @@ int main()
         exit(1);
     }
 
-    SOCKET socket_server = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_server == INVALID_SOCKET)
+    SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket == INVALID_SOCKET)
     {
         printf("\nFAILED: Socket creation");
         exit(EXIT_FAILURE);
@@ -28,14 +28,14 @@ int main()
         printf("\nSUCCESS: Socket creation");
     }
 
-    sockaddr_in address;
+    sockaddr_in serverInfo;
 
-    address.sin_family = AF_INET;
-    address.sin_port = htons(PORT);
-    address.sin_addr.S_un.S_addr = INADDR_ANY;
+    serverInfo.sin_family = AF_INET;
+    serverInfo.sin_port = htons(PORT);
+    serverInfo.sin_addr.S_un.S_addr = INADDR_ANY;
 
     // Binding Socket to PORT
-    if (bind(socket_server, (sockaddr *)&address, sizeof(address)))
+    if (bind(serverSocket, (sockaddr *)&serverInfo, sizeof(serverInfo)))
     {
         printf("\nFAILED: Socket binding");
         exit(EXIT_FAILURE);
@@ -46,7 +46,7 @@ int main()
     }
 
     // Listening
-    if (listen(socket_server, 3) < 0)
+    if (listen(serverSocket, 3) < 0)
     {
         printf("\nFAILED: Socket listening");
         exit(EXIT_FAILURE);
@@ -56,12 +56,12 @@ int main()
         printf("\nSUCCESS: Socket listening");
     }
 
-    sockaddr_in client;
-    int clientSize = sizeof(client);
+    sockaddr_in clientInfo;
+    int clientSize = sizeof(clientInfo);
     char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
-    SOCKET clientSocket = accept(socket_server, (sockaddr *)&client, &clientSize);
-    int s = getnameinfo((sockaddr *)&client, sizeof client, hbuf, sizeof hbuf,
+    SOCKET clientSocket = accept(serverSocket, (sockaddr *)&clientInfo, &clientSize);
+    int s = getnameinfo((sockaddr *)&clientInfo, sizeof clientInfo, hbuf, sizeof hbuf,
                         sbuf, sizeof sbuf,
                         NI_NUMERICHOST | NI_NUMERICSERV);
     if (s == 0)
@@ -87,6 +87,7 @@ int main()
             string response = string(buf, 0, recvResult);
             // Echo response to console
             printf("\nSUCCESS: Recieving from client: %d bytes", recvResult);
+            // printf("\n%s", response.c_str());
             // Return the same message back
             int sendResult = send(clientSocket, "Hi, I'm server", response.size() + 1, 0);
             if (sendResult == SOCKET_ERROR)
