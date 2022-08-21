@@ -4,15 +4,19 @@
 #include <string>
 #include <thread>
 
-using tcp = boost::asio::ip::tcp;
+namespace beast = boost::beast;         // from <boost/beast.hpp>
+namespace http = beast::http;           // from <boost/beast/http.hpp>
+namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
+namespace net = boost::asio;            // from <boost/asio.hpp>
+using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 int main()
 {
 
-    auto const address = boost::asio::ip::make_address("127.0.0.1");
+    auto const address = net::ip::make_address("127.0.0.1");
     auto const port = static_cast<unsigned short>(std::atoi("8080"));
 
-    boost::asio::io_context ioc{1};
+    net::io_context ioc{1};
     tcp::acceptor acceptor{ioc, {address, port}};
 
     while (1)
@@ -25,7 +29,7 @@ int main()
 
         std::thread{[q{std::move(socket)}]()
                     {
-                        boost::beast::websocket::stream<tcp::socket> ws{std::move(const_cast<tcp::socket &>(q))};
+                        websocket::stream<tcp::socket> ws{std::move(const_cast<tcp::socket &>(q))};
 
                         ws.accept();
 
@@ -33,19 +37,27 @@ int main()
                         {
                             try
                             {
-                                boost::beast::flat_buffer buffer;
+                                beast::flat_buffer buffer;
 
                                 ws.read(buffer);
 
-                                auto out = boost::beast::buffers_to_string(buffer.cdata());
+                                auto out = beast::buffers_to_string(buffer.cdata());
 
                                 std::cout << out << std::endl;
 
-                                ws.write(buffer.data());
+                                // Send "pong" as response when "ping" is sent, else return whatever the user sends
+                                if (out == "ping")
+                                {
+                                    ws.write(net::buffer(std::string("pong")));
+                                }
+                                else
+                                {
+                                    ws.write(buffer.data());
+                                }
                             }
-                            catch (boost::beast::system_error const &se)
+                            catch (beast::system_error const &se)
                             {
-                                if (se.code() != boost::beast::websocket::error::closed)
+                                if (se.code() != websocket::error::closed)
                                 {
                                     std::cout << se.code().message() << std::endl;
                                     break;
