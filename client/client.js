@@ -6,7 +6,7 @@
 const URL = "ws://127.0.0.1:8080";
 let socket = new WebSocket(URL);
 
-socket.onopen = () => {
+socket.onopen = (e) => {
   console.log("Socket connected to CPP server");
   console.log('Sending "Hello" to server');
   socket.send("Hello");

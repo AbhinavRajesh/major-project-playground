@@ -12,7 +12,9 @@ using namespace std;
 
 int main()
 {
-    struct sockaddr_in address{};
+    struct sockaddr_in address
+    {
+    };
 
     // Creating socket file descriptor
     // IPV4 - TCP
