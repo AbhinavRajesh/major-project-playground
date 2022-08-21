@@ -17,26 +17,40 @@ int main()
 
     while (1)
     {
+
         tcp::socket socket{ioc};
         acceptor.accept(socket);
 
         std::cout << "socket connection accepted" << std::endl;
 
-        std::thread{[q = std::move(socket)]() mutable
+        std::thread{[q{std::move(socket)}]()
                     {
-                        boost::beast::websocket::stream<tcp::socket> ws{std::move(q)};
+                        boost::beast::websocket::stream<tcp::socket> ws{std::move(const_cast<tcp::socket &>(q))};
 
                         ws.accept();
 
                         while (1)
                         {
-                            boost::beast::flat_buffer buffer;
+                            try
+                            {
+                                boost::beast::flat_buffer buffer;
 
-                            ws.read(buffer);
+                                ws.read(buffer);
 
-                            auto out = boost::beast::buffers_to_string(buffer.cdata());
+                                auto out = boost::beast::buffers_to_string(buffer.cdata());
 
-                            std::cout << out << std::endl;
+                                std::cout << out << std::endl;
+
+                                ws.write(buffer.data());
+                            }
+                            catch (boost::beast::system_error const &se)
+                            {
+                                if (se.code() != boost::beast::websocket::error::closed)
+                                {
+                                    std::cout << se.code().message() << std::endl;
+                                    break;
+                                }
+                            }
                         }
                     }}
             .detach();

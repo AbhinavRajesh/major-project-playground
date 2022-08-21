@@ -13,3 +13,15 @@ There is an absence of multiplayer and multiuser support in WebXR. The project i
 ## Setup steps
 
 - [docs/setup.md](./docs/setup.md)
+
+## Compile
+
+```sh
+g++ -I /usr/include/boost -pthread source/server.cc -o server.out
+```
+
+## Run
+
+```sh
+./server.out
+```
