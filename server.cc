@@ -33,6 +33,7 @@ int main()
     serverInfo.sin_family = AF_INET;
     serverInfo.sin_port = htons(PORT);
     serverInfo.sin_addr.S_un.S_addr = INADDR_ANY;
+    char server_hbuf[NI_MAXHOST], server_sbuf[NI_MAXSERV];
 
     // Binding Socket to PORT
     if (bind(serverSocket, (sockaddr *)&serverInfo, sizeof(serverInfo)))
@@ -42,6 +43,7 @@ int main()
     }
     else
     {
+
         printf("\nSUCCESS: Socket binding");
     }
 
@@ -58,19 +60,34 @@ int main()
 
     sockaddr_in clientInfo;
     int clientSize = sizeof(clientInfo);
-    char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+    char client_hbuf[NI_MAXHOST], client_sbuf[NI_MAXSERV];
 
     SOCKET clientSocket = accept(serverSocket, (sockaddr *)&clientInfo, &clientSize);
-    int s = getnameinfo((sockaddr *)&clientInfo, sizeof clientInfo, hbuf, sizeof hbuf,
-                        sbuf, sizeof sbuf,
-                        NI_NUMERICHOST | NI_NUMERICSERV);
-    if (s == 0)
+
+    if (clientSocket == INVALID_SOCKET)
     {
-        printf("\nSUCCESS: Socket acception: %s:%s", hbuf, sbuf);
+        printf("\nFAILED: Socket acception");
     }
     else
     {
-        printf("\nFAILED: Socket acception");
+        printf("\nSUCCESS: Socket acception");
+    }
+
+    // printing server info
+    if (getnameinfo((sockaddr *)&serverInfo, sizeof(serverInfo),
+                    server_hbuf, sizeof(server_hbuf),
+                    server_sbuf, sizeof(server_sbuf),
+                    NI_NUMERICHOST | NI_NUMERICSERV) == 0)
+    {
+        printf("\n\nSERVER @ %s:%s", server_hbuf, server_sbuf);
+    }
+    // printing client
+    if (getnameinfo((sockaddr *)&clientInfo, sizeof(clientInfo),
+                    client_hbuf, sizeof(client_hbuf),
+                    client_sbuf, sizeof(client_sbuf),
+                    NI_NUMERICHOST | NI_NUMERICSERV) == 0)
+    {
+        printf("\nCLIENT @ %s:%s", client_hbuf, client_sbuf);
     }
 
     char buf[4096]; // 4Mb
@@ -87,7 +104,6 @@ int main()
             string response = string(buf, 0, recvResult);
             // Echo response to console
             printf("\nSUCCESS: Recieving from client: %d bytes", recvResult);
-            // printf("\n%s", response.c_str());
             // Return the same message back
             int sendResult = send(clientSocket, "Hi, I'm server", response.size() + 1, 0);
             if (sendResult == SOCKET_ERROR)
