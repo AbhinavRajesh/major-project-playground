@@ -7,7 +7,15 @@
     <title>Document</title>
   </head>
   <body>
+    <form id="form">
+      <input type="text" name="message" />
+      <button type="submit">Send</button>
+    </form>
+    <div id="serverResponse"></div>
     <button onclick="sendhi()">Send hi</button>
-    <script src="./client.js" async defer />
+    <script src="./client.js" />
   </body>
+  <script>
+    document.addEventListener("submit", handleSubmit);
+  </script>
 </html>

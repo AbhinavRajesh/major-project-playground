@@ -21,6 +21,9 @@ socket.onopen = (event) => {
 socket.onmessage = (event) => {
   eventLogger(event);
   console.log(`Server said: ${event.data}`);
+
+  const serverContainer = document.getElementById("serverResponse");
+  serverContainer.innerHTML = event.data;
 };
 
 socket.onclose = (event) => {
@@ -42,4 +45,10 @@ socket.onerror = (event) => {
 
 const sendhi = () => {
   socket.send("Hi");
+};
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  socket.send(e.target[0].value);
 };
