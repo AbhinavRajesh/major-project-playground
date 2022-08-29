@@ -19,6 +19,8 @@ int main()
     net::io_context ioc{1};
     tcp::acceptor acceptor{ioc, {address, port}};
 
+    std::cout << "Started server" <<std::endl;
+
     while (1)
     {
 
