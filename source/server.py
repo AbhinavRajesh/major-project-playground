@@ -8,17 +8,18 @@ connected_clients = []
 messages = []
 
 
-async def handler(websocket, path):
-    connected_clients.append(websocket.id)
+async def handler(current_client, path):
+    connected_clients.append(current_client)
     while True:
-        data = await websocket.recv()
+        data = await current_client.recv()
         current_msg = {
-            "id": str(websocket.id),
-            "cid": connected_clients.index(websocket.id),
+            "id": str(current_client.id),
+            "cid": connected_clients.index(current_client),
             "msg": data,
         }
         messages.append(current_msg)
-        await websocket.send(json.dumps({"messages": messages}))
+        for client in connected_clients:
+            await client.send(json.dumps({"messages": messages}))
 
 
 start_server = websockets.serve(handler, "127.0.0.1", 8080)
