@@ -20,10 +20,12 @@ socket.onopen = (event) => {
 
 socket.onmessage = (event) => {
   eventLogger(event);
-  console.log(`Server said: ${event.data}`);
-
   const serverContainer = document.getElementById("serverResponse");
-  serverContainer.innerHTML = event.data;
+  let chatStr = "";
+  JSON.parse(event.data)["messages"]?.map((msg) => {
+    chatStr += `<p><b>${msg?.cid}</b>: ${msg?.msg}</p>`;
+  });
+  serverContainer.innerHTML = chatStr;
 };
 
 socket.onclose = (event) => {
@@ -45,6 +47,14 @@ socket.onerror = (event) => {
 
 const sendhi = () => {
   socket.send("Hi");
+};
+
+const sendmsg = () => {
+  let inputMsg = document.getElementById("msgBox").value;
+  if (inputMsg) {
+    socket.send();
+    document.getElementById("msgBox").value = "";
+  }
 };
 
 const handleSubmit = (e) => {

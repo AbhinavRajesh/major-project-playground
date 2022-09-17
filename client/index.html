@@ -7,8 +7,8 @@
     <title>Document</title>
   </head>
   <body>
-    <form id="form">
-      <input type="text" name="message" />
+    <form id="form" onsubmit="sendmsg()">
+      <input id="msgBox" type="text" name="message" />
       <button type="submit">Send</button>
     </form>
     <div id="serverResponse"></div>
