@@ -1,9 +1,3 @@
-/**
- * IGNORE THIS FILE
- * THIS IS ME TRYING TO CONNECT A WEBSOCKET TO A TCP CONNECTION :/
- * https://stackoverflow.com/questions/15160739/possible-for-websocket-client-on-browser-to-talk-to-tcp-socket-server
- */
-// const URL = "wss://0.0.0.0:8080";
 const URL = "ws://127.0.0.1:8080";
 let socket = new WebSocket(URL);
 
@@ -13,9 +7,10 @@ const eventLogger = (event, data = event) => {
 
 socket.onopen = (event) => {
   eventLogger(event);
-  console.log("Socket connected to CPP server");
-  console.log('Sending "Hello" to server');
-  socket.send("Hi, I'm Client");
+  console.log("Socket connected to Python server");
+  document.addEventListener("keypress", ({ key, code }) => {
+    socket.send(JSON.stringify({ key, code }));
+  });
 };
 
 socket.onmessage = (event) => {

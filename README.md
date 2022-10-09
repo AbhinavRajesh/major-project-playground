@@ -8,14 +8,13 @@ There is an absence of multiplayer and multiuser support in WebXR. The project i
 
 ## How we plan to implement?
 
-- 1.Create a websocket server-client application using python for backend and HTML-JS for frontend. Websocket API was used
-- 2.Upgrade the websocket server for multi client communication.
-- 3.Create a communication between multiple clients where the keystrokes of each client would get updated for each user.
-- 4.Create a VR session using WebXR
-- 5.Obtain the position (coordinates of headsets and controllers) from the VR session
-- 6.Create avatars for users at the coordinates obtained
-- 7.Connect the Websocket server with the WebXR to enable multi user environment
-
+- [x] Create a websocket server-client application using python for backend and HTML-JS for frontend. Websocket API was used
+- [x] Upgrade the websocket server for multi client communication.
+- [x] Create a communication between multiple clients where the keystrokes of each client would get updated for each user.
+- [] Create a VR session using WebXR
+- [] Obtain the position (coordinates of headsets and controllers) from the VR session
+- [] Create avatars for users at the coordinates obtained
+- [] Connect the Websocket server with the WebXR to enable multi user environment
 
 ## Setup steps
 
@@ -32,10 +31,11 @@ g++ -I /usr/include/boost -pthread source/server.cc -o server.out
 ```sh
 ./server.out
 ```
+
 ## References
+
 Mozilla Websocket API Docs
 https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
 
 Mozilla WebXR Device API
 https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API
-
