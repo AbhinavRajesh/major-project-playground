@@ -1,4 +1,4 @@
-import asyncio, json, websockets, base64, time
+import asyncio, json, websockets, base64
 
 # create handler for each connection
 connected_clients = []
