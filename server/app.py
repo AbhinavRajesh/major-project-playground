@@ -11,8 +11,11 @@ async def handler(current_client, path):
         data = json.loads(data)
         text_data = data.get("text_data", None)
         timestamp = data.get("timestamp", None)
-        # audio_file = open("sample_audio.mp3", "rb").read()
-        # audio_data = str(base64.b64encode(audio_file).decode("utf-8"))
+        audio_file = open(
+            "C:\\Users\\asnql\\Codebase\\MajorProject\\app\server\\test\\sample_audio.mp3",
+            "rb",
+        ).read()
+        audio_data = str(base64.b64encode(audio_file).decode("utf-8"))
         # video_data = data.get("video_data", None)
         # audio_data = data.get("audio_data", None)
         current_msg = {
@@ -20,7 +23,7 @@ async def handler(current_client, path):
             "cname": connected_clients.index(current_client),
             "text_data": text_data,
             "timestamp": timestamp,
-            "audio_data": "",
+            "audio_data": audio_data,
         }
         for client in connected_clients:
             await client.send(json.dumps(current_msg))

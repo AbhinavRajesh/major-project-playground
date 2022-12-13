@@ -8,6 +8,13 @@ const Chat = () => {
   const [currMessage, setCurrMessage] = useState("");
   const [messages, setMessages] = useState<ClientData[]>([]);
 
+  const handleRecieveMessage = (data: ClientData) => {
+    // console.log(data);
+    var snd = new Audio("data:audio/wav;base64," + data.audio_data);
+    snd.play();
+    setMessages((prev) => [...prev, data]);
+  };
+
   const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const sendData = {
@@ -24,7 +31,7 @@ const Chat = () => {
 
   useEffect(() => {
     SERVER.start();
-    SERVER.receive((data) => setMessages((prev) => [...prev, data]));
+    SERVER.receive(handleRecieveMessage);
     return () => {
       // SERVER.close();
     };
