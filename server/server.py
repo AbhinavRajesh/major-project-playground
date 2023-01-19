@@ -1,8 +1,29 @@
-import asyncio, json, websockets
+import os, asyncio, json, websockets, ffmpeg_streaming
+from ffmpeg_streaming import Formats
 
 # create handler for each connection
 connected_clients = []
 messages = []
+
+
+def get_file_path(filename="", local=True):
+    if local:
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(os.path.join(BASE_DIR, "test"), filename)
+    else:
+        return filename
+
+
+async def streamer():
+    video_stream = ffmpeg_streaming.input(get_file_path("sample_video.mp4"))
+    video_dash = video_stream.dash(Formats.h264())
+    video_dash.auto_generate_representations()
+    video_dash.output(get_file_path("sample_video.mpd"))
+    current_msg = {
+        "video_data": "video_data",
+    }
+    for client in connected_clients:
+        await client.send(json.dumps(current_msg))
 
 
 async def handler(current_client, path):
