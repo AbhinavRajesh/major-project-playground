@@ -19,11 +19,7 @@ async def streamer():
     video_dash = video_stream.dash(Formats.h264())
     video_dash.auto_generate_representations()
     video_dash.output(get_file_path("sample_video.mpd"))
-    current_msg = {
-        "video_data": "video_data",
-    }
-    for client in connected_clients:
-        await client.send(json.dumps(current_msg))
+    video_dash.output(f"ws://127.0.0.1:8080/sample_video.mpd")
 
 
 async def handler(current_client, path):
@@ -53,6 +49,11 @@ async def handler(current_client, path):
 def main():
     Websocket_Server = websockets.serve(handler, "127.0.0.1", 8080)
     asyncio.get_event_loop().run_until_complete(Websocket_Server)
+    video_stream = ffmpeg_streaming.input(get_file_path("sample_video.mp4"))
+    video_dash = video_stream.dash(Formats.h264())
+    video_dash.auto_generate_representations()
+    video_dash.output(get_file_path("sample_video.mpd"))
+    # video_dash.output(f"ws://127.0.0.1:8080/sample_video.mpd")
     try:
         asyncio.get_event_loop().run_forever()
     except:
