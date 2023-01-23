@@ -21,6 +21,8 @@ async def handler(current_client, path):
     i = 1
     while True:
         try:
+            # 1000/15 ~= 60 FPS 
+            cv2.waitKey(15)
             ret, frame = cap.read()
             if not ret:
                 break

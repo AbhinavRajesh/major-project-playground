@@ -1,10 +1,9 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Canvas, useThree, useLoader } from "@react-three/fiber";
-import { Image, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
 
-import Video from "./assets/video/dummy.mp4";
 import Chat from "./pages/Chat";
 import Hall from "./Hall";
 import { SERVER } from "./infrastructure";
@@ -29,7 +28,9 @@ const Theatre = () => {
       reader.readAsDataURL(newFile);
       reader.onloadend = function () {
         base64 = reader.result as string;
-        setFrameUrl(base64);
+        setFrameUrl(() => {
+          return base64;
+        });
         imageElement.src = base64;
         texture.needsUpdate = true;
       };
@@ -43,17 +44,13 @@ const Theatre = () => {
     return () => {
       // SERVER.close();
     };
-  }, []);
+  });
 
   return (
     <>
       <group position={[0, -260, -280]} scale={150}>
-        {/* <mesh rotation={[0, 0, 0]} position={[0, 2, 3]}>
+        <mesh rotation={[0, Math.PI, 0]} position={[0, 2, 3]}>
           <planeGeometry args={[3.2, 1.9]} />
-          <meshBasicMaterial attach="material" map={texture} />
-        </mesh> */}
-        <mesh>
-          <planeGeometry attach="geometry" args={[3.2, 9]} />
           <meshBasicMaterial attach="material" map={texture} />
         </mesh>
       </group>
