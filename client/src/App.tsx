@@ -5,7 +5,7 @@ import * as THREE from "three";
 import "./App.css";
 
 import Video from "./assets/video/dummy.mp4";
-
+import Chat from "./pages/Chat";
 import Hall from "./Hall";
 
 const Theatre = () => {
@@ -66,6 +66,7 @@ const Controls = () => {
 };
 
 function App() {
+  if (window.location.pathname === "/chat") return <Chat />;
   return (
     <Canvas
       camera={{

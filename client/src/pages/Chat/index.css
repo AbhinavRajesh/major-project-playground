@@ -1,0 +1,27 @@
+.mp-Chatbox {
+  margin: 50px;
+}
+.mp-chatMessage {
+  color: white;
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+.mp-chatMessage p {
+  margin: 0;
+}
+.mp-chatMessage span {
+  margin: 0 15px;
+  color: #909090;
+}
+
+.mp-chatInput input {
+  padding: 10px 10px;
+  background-color: #404040;
+  color: #e6e6e6;
+  height: 40px;
+  width: 240px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
