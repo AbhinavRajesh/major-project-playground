@@ -1,16 +1,14 @@
-import React, { Suspense, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import React, { Suspense, useEffect, useState } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
 
 import Video from "./assets/video/dummy.mp4";
-import Cinema from "./Cinema";
 import Chat from "./pages/Chat";
+import Hall from "./Hall";
 
 const Theatre = () => {
-  const { nodes, scene } = useGLTF("cinema.glb");
-
   const [video] = useState(() => {
     const _video = document.createElement("video");
     _video.src = Video;
@@ -21,16 +19,10 @@ const Theatre = () => {
     return _video;
   });
 
-  console.log(nodes, scene);
-
   return (
     <>
-      <group>
-        {/* <Cinema /> */}
-        {/* <mesh geometry={nodes.frame.geometry}>
-        <meshStandardMaterial color="white" />
-      </mesh> */}
-        <mesh rotation={[0, 0, 0]} position={[0, 0, 2]}>
+      <group position={[0, -260, -280]} scale={150}>
+        <mesh rotation={[0, 0, 0]} position={[0, 2, 3]}>
           <planeGeometry args={[3.2, 1.9]} />
           <meshStandardMaterial emissive="white" side={THREE.DoubleSide}>
             <videoTexture attach="map" args={[video]} />
@@ -42,28 +34,60 @@ const Theatre = () => {
   );
 };
 
-const Floor = () => {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-2, -2, 0]}>
-      <planeBufferGeometry args={[100, 100]} />
-      <meshStandardMaterial color="white" />
-    </mesh>
-  );
+const Controls = () => {
+  const { camera } = useThree();
+
+  const handleKeyPress = (e: KeyboardEvent) => {
+    switch (e.key) {
+      case "w":
+        camera.translateZ(-10);
+        break;
+      case "s":
+        camera.translateZ(10);
+        break;
+      case "a":
+        camera.translateX(10);
+        break;
+      case "d":
+        camera.translateX(-10);
+        break;
+    }
+    console.log(camera);
+  };
+  useEffect(() => {
+    document.addEventListener("keypress", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keypress", handleKeyPress);
+    };
+  });
+
+  return null;
 };
 
 function App() {
   if (window.location.pathname === "/chat") return <Chat />;
   return (
-    <Canvas>
-      <fog attach="fog" args={["black", 1, 7]} />
-      <OrbitControls maxPolarAngle={Math.PI / 2} minPolarAngle={0} />
-      <directionalLight intensity={0.5} />
-      <Suspense fallback={null}>
+    <Canvas
+      camera={{
+        near: 0.1,
+        far: 100,
+        position: [2, 6, 7],
+      }}
+    >
+      <OrbitControls
+        maxPolarAngle={Math.PI / 2}
+        minPolarAngle={0}
+        minDistance={100}
+        maxDistance={300}
+      />
+      <ambientLight intensity={0.1} color="#b9d5ff" />
+      <directionalLight intensity={1.2} color="#b9d5ff" position={[-4, 5, 2]} />
+      <Suspense fallback={<Theatre />}>
         <Theatre />
-        {/* <Cinema /> */}
+        <Controls />
+        <Hall />
       </Suspense>
-
-      <Floor />
     </Canvas>
   );
 }
