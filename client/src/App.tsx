@@ -1,33 +1,60 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Canvas, useThree, useLoader } from "@react-three/fiber";
+import { Image, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
 
 import Video from "./assets/video/dummy.mp4";
 import Chat from "./pages/Chat";
 import Hall from "./Hall";
+import { SERVER } from "./infrastructure";
 
 const Theatre = () => {
-  const [video] = useState(() => {
-    const _video = document.createElement("video");
-    _video.src = Video;
-    _video.crossOrigin = "Anonymous";
-    _video.loop = true;
-    _video.muted = true;
-    _video.play();
-    return _video;
+  const [frameUrl, setFrameUrl] = useState<string>(
+    "https://st2.depositphotos.com/6797658/10299/v/950/depositphotos_102990436-stock-illustration-happy-pathers-day-love-dady.jpg"
+  );
+  const texture = useLoader(THREE.TextureLoader, frameUrl);
+  texture.needsUpdate = true;
+  const [imageElement] = useState(() => {
+    const _image = document.createElement("img");
+    _image.crossOrigin = "Anonymous";
+    return _image;
   });
+
+  const handleStream = () => {
+    SERVER.receive((data) => {
+      let newFile = data;
+      let base64 = "";
+      let reader = new FileReader();
+      reader.readAsDataURL(newFile);
+      reader.onloadend = function () {
+        base64 = reader.result as string;
+        setFrameUrl(base64);
+        imageElement.src = base64;
+        texture.needsUpdate = true;
+      };
+    });
+  };
+
+  useEffect(() => {
+    SERVER.start();
+    handleStream();
+    //
+    return () => {
+      // SERVER.close();
+    };
+  }, []);
 
   return (
     <>
       <group position={[0, -260, -280]} scale={150}>
-        <mesh rotation={[0, 0, 0]} position={[0, 2, 3]}>
+        {/* <mesh rotation={[0, 0, 0]} position={[0, 2, 3]}>
           <planeGeometry args={[3.2, 1.9]} />
-          <meshStandardMaterial emissive="white" side={THREE.DoubleSide}>
-            <videoTexture attach="map" args={[video]} />
-            <videoTexture attach="emissiveMap" args={[video]} />
-          </meshStandardMaterial>
+          <meshBasicMaterial attach="material" map={texture} />
+        </mesh> */}
+        <mesh>
+          <planeGeometry attach="geometry" args={[3.2, 9]} />
+          <meshBasicMaterial attach="material" map={texture} />
         </mesh>
       </group>
     </>
@@ -70,8 +97,8 @@ function App() {
   return (
     <Canvas
       camera={{
-        near: 0.1,
-        far: 100,
+        // near: 0.1,
+        // far: 100,
         position: [2, 6, 7],
       }}
     >
