@@ -6,6 +6,7 @@ import "./App.css";
 
 import Video from "./assets/video/dummy.mp4";
 import Cinema from "./Cinema";
+import Chat from "./pages/Chat";
 
 const Theatre = () => {
   const { nodes, scene } = useGLTF("cinema.glb");
@@ -51,6 +52,7 @@ const Floor = () => {
 };
 
 function App() {
+  if (window.location.pathname === "/chat") return <Chat />;
   return (
     <Canvas>
       <fog attach="fog" args={["black", 1, 7]} />

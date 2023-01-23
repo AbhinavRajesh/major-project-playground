@@ -1,2 +1,2 @@
-python-ffmpeg-video-streaming==0.1.15
+opencv-python==4.7.0.68
 websockets==10.4
