@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Canvas, useThree, useLoader } from "@react-three/fiber";
+import { VRButton, XR, Controllers, Hands } from "@react-three/xr";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
@@ -92,27 +93,38 @@ const Controls = () => {
 function App() {
   if (window.location.pathname === "/chat") return <Chat />;
   return (
-    <Canvas
-      camera={{
-        // near: 0.1,
-        // far: 100,
-        position: [2, 6, 7],
-      }}
-    >
-      <OrbitControls
-        maxPolarAngle={Math.PI / 2}
-        minPolarAngle={0}
-        minDistance={100}
-        maxDistance={300}
-      />
-      <ambientLight intensity={0.1} color="#b9d5ff" />
-      <directionalLight intensity={1.2} color="#b9d5ff" position={[-4, 5, 2]} />
-      <Suspense fallback={<Theatre />}>
-        <Theatre />
-        <Controls />
-        <Hall />
-      </Suspense>
-    </Canvas>
+    <>
+      <VRButton />
+      <Canvas
+        camera={{
+          // near: 0.1,
+          // far: 100,
+          position: [2, 6, 7],
+        }}
+      >
+        <XR>
+          <Controllers />
+          <Hands />
+          <OrbitControls
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={0}
+            minDistance={100}
+            maxDistance={300}
+          />
+          <ambientLight intensity={0.1} color="#b9d5ff" />
+          <directionalLight
+            intensity={1.2}
+            color="#b9d5ff"
+            position={[-4, 5, 2]}
+          />
+          <Suspense fallback={<Theatre />}>
+            <Theatre />
+            <Controls />
+            <Hall />
+          </Suspense>
+        </XR>
+      </Canvas>
+    </>
   );
 }
 
