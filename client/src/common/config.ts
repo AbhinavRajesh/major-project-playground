@@ -1,5 +1,5 @@
 const config = {
-  WS_API: `ws://127.0.0.1:8080`,
+  WS_API: `wss://172.16.149.8:8090`,
 };
 
 export default config;

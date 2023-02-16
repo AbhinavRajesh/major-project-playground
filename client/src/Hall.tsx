@@ -11,7 +11,7 @@ import { useGLTF } from "@react-three/drei";
 export default function Model(props: any) {
   const { nodes, materials } = useGLTF("scene.gltf") as any;
   return (
-    <group {...props} position={[0, -130, -240]} dispose={null}>
+    <group {...props} position={[-5, -2.15, 0]} dispose={null} scale={0.05}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group position={[0, 0, 0]} rotation={[0, 0, 0]} />
         <mesh

@@ -1,5 +1,6 @@
 import os, asyncio, websockets, cv2
 from _thread import *
+import ssl
 
 # create handler for each connection
 global connected_clients
@@ -14,7 +15,14 @@ def get_file_path(filename="", local=True):
         return filename
 
 
+async def logger(current_client):
+    message = await current_client.recv()
+    print(f"[LOGGER]:", message)
+
 async def handler(current_client, path):
+    if path == "/logger":
+        logger(current_client)
+        return
     global connected_clients
     connected_clients.append(current_client)
     cap = cv2.VideoCapture(get_file_path("sample_video.mp4"))

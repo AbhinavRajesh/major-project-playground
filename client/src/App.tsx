@@ -1,14 +1,15 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Canvas, useThree, useLoader } from "@react-three/fiber";
-import { VRButton, ARButton, XR, Controllers, Hands } from "@react-three/xr";
+import { VRButton, XR, Controllers, Hands } from "@react-three/xr";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
 
-import Chat from "./pages/Chat";
+// import Chat from "./pages/Chat";
 import Hall from "./Hall";
 // import Hall from "./Theatre";
 import { SERVER } from "./infrastructure";
+// import { logger } from "./common/logger";
 
 const Theatre = () => {
   const [frameUrl, setFrameUrl] = useState<string>(
@@ -50,7 +51,7 @@ const Theatre = () => {
 
   return (
     <>
-      <group position={[0, -260, -280]} scale={150}>
+      <group position={[0, -11, 10]} scale={10}>
         <mesh rotation={[0, Math.PI, 0]} position={[0, 2, 3]}>
           <planeGeometry args={[3.2, 1.9]} />
           <meshBasicMaterial attach="material" map={texture} />
@@ -91,8 +92,53 @@ const Controls = () => {
   return null;
 };
 
+const Controller = () => {
+  // const rightController= useController("right") as XRController
+  // const { inputSource } = rightController
+
+  // logger.send(JSON.stringify(inputSource))
+  return null;
+
+  // useFrame(() => {
+  //   if (!rightController) return;
+  //   const { grip: controller } = rightController;
+
+  // })
+  // const { camera } = useThree();
+
+  // useEffect(() => {
+  //   function handleControllerInput(event: any) {
+  //     const gamepad = event.gamepad;
+  //     const x = gamepad.axes[0];
+  //     const y = gamepad.axes[1];
+  //     camera.position.x = x;
+  //     camera.position.y = y;
+  //   }
+
+  //   window.addEventListener("gamepadconnected", handleControllerInput);
+  //   return () =>
+  //     window.removeEventListener("gamepadconnected", handleControllerInput);
+  // }, []);
+
+  // return null;
+};
+
 function App() {
-  if (window.location.pathname === "/chat") return <Chat />;
+  // useEffect(() => {
+  //   function handleControllerInput(event: any) {
+  //     const gamepad = event.gamepad;
+  //     const x = gamepad.axes[0];
+  //     const y = gamepad.axes[1];
+  //     SERVER.send(JSON.stringify({x, y}))
+  //   }
+
+  //   window.addEventListener("gamepadconnected", handleControllerInput);
+  //   return () =>
+  //     window.removeEventListener("gamepadconnected", handleControllerInput);
+  // }, []);
+
+  // if (window.location.pathname === "/chat") return <Chat />;
+
   return (
     <>
       <VRButton />
@@ -100,17 +146,18 @@ function App() {
         camera={{
           // near: 0.1,
           // far: 100,
-          position: [2, 6, 7],
+          position: [0, 0, 0],
         }}
       >
         <XR>
           <Controllers />
+          <Controller />
           <Hands />
           <OrbitControls
             maxPolarAngle={Math.PI / 2}
             minPolarAngle={0}
-            minDistance={100}
-            maxDistance={300}
+            minDistance={10}
+            maxDistance={30}
           />
           <ambientLight intensity={0.1} color="#b9d5ff" />
           <directionalLight
