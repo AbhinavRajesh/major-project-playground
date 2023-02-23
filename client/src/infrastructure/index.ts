@@ -9,8 +9,9 @@ export const SERVER = {
     };
   },
 
-  receive: (callback: (data: any) => void) =>
-    (socket.onmessage = (e: { data: any }) => callback(e.data)),
+  receive: (callback: (data: any) => void) => {
+    socket.onmessage = (e: { data: any }) => callback(e.data);
+  },
 
   send: (data: any) => socket.send(JSON.stringify(data)),
   onclose: (callback: () => void) => {

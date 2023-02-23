@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SERVER } from "../../infrastructure";
 import Message from "./common/Message";
+// import dashjs from "dashjs";
 import "./index.css";
 
 const Chat = () => {
   const [currMessage, setCurrMessage] = useState("");
-  const [message, setMessage] = useState<string>();
+  const [message, setMessage] = useState<string>("");
+  const videoRef = useRef(null);
 
   const handleStream = () => {
     SERVER.receive((data) => {
-      let newFile = data;
-      let base64 = "";
-      let reader = new FileReader();
-      reader.readAsDataURL(newFile);
-      reader.onloadend = function () {
-        base64 = reader.result as string;
-        setMessage(base64);
-      };
+      setMessage("");
+      URL.revokeObjectURL(message);
+      console.log({ data });
+      const url = URL.createObjectURL(data);
+      setMessage(url);
     });
   };
 
@@ -39,15 +38,21 @@ const Chat = () => {
   useEffect(() => {
     SERVER.start();
     handleStream();
-    //
     return () => {
       // SERVER.close();
     };
+    // eslint-disable-next-line
   }, []);
 
   return (
     <div className="mp-Chatbox">
       <Message message={message} />
+      <video
+        ref={videoRef}
+        id="video-player"
+        // src={"http://localhost:5000/video.mpd"}
+        controls
+      ></video>
       <div className="mp-chatInput">
         <input
           value={currMessage}

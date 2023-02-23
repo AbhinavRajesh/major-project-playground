@@ -9,6 +9,7 @@ import "./App.css";
 import Hall from "./Hall";
 // import Hall from "./Theatre";
 import { SERVER } from "./infrastructure";
+import Chat from "./pages/Chat";
 // import { logger } from "./common/logger";
 
 const Theatre = () => {
@@ -25,18 +26,8 @@ const Theatre = () => {
 
   const handleStream = () => {
     SERVER.receive((data) => {
-      let newFile = data;
-      let base64 = "";
-      let reader = new FileReader();
-      reader.readAsDataURL(newFile);
-      reader.onloadend = function () {
-        base64 = reader.result as string;
-        setFrameUrl(() => {
-          return base64;
-        });
-        imageElement.src = base64;
-        texture.needsUpdate = true;
-      };
+      const blob = new Blob([data], { type: "video/mp4" });
+      console.log(URL.createObjectURL(blob));
     });
   };
 
@@ -137,7 +128,7 @@ function App() {
   //     window.removeEventListener("gamepadconnected", handleControllerInput);
   // }, []);
 
-  // if (window.location.pathname === "/chat") return <Chat />;
+  if (window.location.pathname === "/chat") return <Chat />;
 
   return (
     <>
