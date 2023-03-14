@@ -1,10 +1,11 @@
-import os, asyncio, websockets, cv2
+import os, asyncio, websockets
 from _thread import *
-import ssl
+import json
 
 # create handler for each connection
 global connected_clients
 connected_clients = []
+seek = 0
 
 
 def get_file_path(filename="", local=True):
@@ -19,29 +20,18 @@ async def logger(current_client):
     message = await current_client.recv()
     print(f"[LOGGER]:", message)
 
+
 async def handler(current_client, path):
-    if path == "/logger":
-        logger(current_client)
-        return
-    global connected_clients
+    global connected_clients, seek
     connected_clients.append(current_client)
-    cap = cv2.VideoCapture(get_file_path("sample_video.mp4"))
-    i = 1
+    print(current_client.id)
+    await current_client.send(json.dumps({"seek": seek}))
+    print("send")
     while True:
-        try:
-            # 1000/15 ~= 60 FPS 
-            cv2.waitKey(15)
-            ret, frame = cap.read()
-            if not ret:
-                break
-            data = cv2.imencode(".jpg", frame)[1].tostring()
-            for client in connected_clients:
-                await client.send(data)
-            print("success:", i)
-        except Exception as e:
-            print("failed:", i, " =>", e)
-        finally:
-            i += 1
+        if connected_clients.index(current_client) == 0:
+            data = await current_client.recv()
+            data = json.loads(data)
+            seek = data["seek"]
 
 
 def main():

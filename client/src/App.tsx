@@ -15,6 +15,7 @@ const Theatre = () => {
   const [frameUrl, setFrameUrl] = useState<string>(
     "https://st2.depositphotos.com/6797658/10299/v/950/depositphotos_102990436-stock-illustration-happy-pathers-day-love-dady.jpg"
   );
+  const [seekTime, setSeekTime] = useState(0);
   const texture = useLoader(THREE.TextureLoader, frameUrl);
   texture.needsUpdate = true;
   const [imageElement] = useState(() => {
@@ -24,25 +25,20 @@ const Theatre = () => {
   });
 
   const handleStream = () => {
+    console.log("yee");
     SERVER.receive((data) => {
-      let newFile = data;
-      let base64 = "";
-      let reader = new FileReader();
-      reader.readAsDataURL(newFile);
-      reader.onloadend = function () {
-        base64 = reader.result as string;
-        setFrameUrl(() => {
-          return base64;
-        });
-        imageElement.src = base64;
-        texture.needsUpdate = true;
-      };
+      setSeekTime(parseInt(data));
     });
   };
 
   useEffect(() => {
     SERVER.start();
     handleStream();
+    setInterval(() => {
+      // sending seektime from every client
+      // but only the first clients seektime is synced with server
+      SERVER.send({ seek: seekTime });
+    }, 500);
     //
     return () => {
       // SERVER.close();
