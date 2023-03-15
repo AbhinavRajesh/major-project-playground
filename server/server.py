@@ -24,14 +24,27 @@ async def logger(current_client):
 async def handler(current_client, path):
     global connected_clients, seek
     connected_clients.append(current_client)
-    print(current_client.id)
+    print(current_client.id, "joined.")
+    print(f"Now total {len(connected_clients)} clients")
     await current_client.send(json.dumps({"seek": seek}))
-    print("send")
     while True:
-        if connected_clients.index(current_client) == 0:
-            data = await current_client.recv()
-            data = json.loads(data)
-            seek = data["seek"]
+        data = await current_client.recv()
+        data = json.loads(data)
+        if data["type"] == "coordinates":
+            coordinates = data["coordinates"]
+            for client in connected_clients:
+                if not client.id == current_client.id:
+                    data = {
+                        "client": client.id,
+                        "coordinates": coordinates,
+                        "type": "coordinates",
+                    }
+                    await client.send(json.dumps(data))
+        elif data["type"] == "seek":
+            if connected_clients.index(current_client) == 0:
+                data = await current_client.recv()
+                data = json.loads(data)
+                seek = data["seek"]
 
 
 def main():
