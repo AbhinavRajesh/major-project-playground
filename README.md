@@ -11,7 +11,7 @@ There is an absence of multiplayer and multiuser support in WebXR. The project i
 - [x] Create a websocket server-client application using python for backend and HTML-JS for frontend. Websocket API was used
 - [x] Upgrade the websocket server for multi client communication.
 - [x] Create a communication between multiple clients where the keystrokes of each client would get updated for each user.
-- [x ] Conference hall using Three js
+- [x] Conference hall using Three js
 - [ ] Create avatar
 - [ ] Streaming using 
 - [ ] Multiplayer support - detect other users coordinates
