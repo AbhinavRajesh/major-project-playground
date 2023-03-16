@@ -30,21 +30,24 @@ async def handler(current_client, path):
     while True:
         data = await current_client.recv()
         data = json.loads(data)
-        if data["type"] == "coordinates":
-            coordinates = data["coordinates"]
-            for client in connected_clients:
-                if not client.id == current_client.id:
-                    data = {
-                        "client": client.id,
-                        "coordinates": coordinates,
-                        "type": "coordinates",
-                    }
-                    await client.send(json.dumps(data))
-        elif data["type"] == "seek":
-            if connected_clients.index(current_client) == 0:
-                data = await current_client.recv()
-                data = json.loads(data)
-                seek = data["seek"]
+        if "type" in data:
+            if data["type"] == "coordinates":
+                position = data["position"]
+                direction = data["direction"]
+                for client in connected_clients:
+                    if not client.id == current_client.id:
+                        data = {
+                            "client": client.id,
+                            "position": position,
+                            "direction": direction,
+                            "type": "coordinates",
+                        }
+                        await client.send(json.dumps(data))
+            elif data["type"] == "seek":
+                if connected_clients.index(current_client) == 0:
+                    data = await current_client.recv()
+                    data = json.loads(data)
+                    seek = data["seek"]
 
 
 def main():

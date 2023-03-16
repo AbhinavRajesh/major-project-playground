@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { Canvas, useThree, useLoader } from "@react-three/fiber";
+import { Canvas, useThree, useLoader, useFrame } from "@react-three/fiber";
 import { VRButton, XR, Controllers, Hands } from "@react-three/xr";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -34,13 +34,14 @@ const Theatre = () => {
   useEffect(() => {
     SERVER.start();
     handleStream();
-    setInterval(() => {
+    const interval = setInterval(() => {
       // sending seektime from every client
       // but only the first clients seektime is synced with server
       SERVER.send({ seek: seekTime });
     }, 500);
     //
     return () => {
+      clearInterval(interval)
       // SERVER.close();
     };
   });
@@ -89,10 +90,40 @@ const Controls = () => {
 };
 
 const Controller = () => {
-  // const rightController= useController("right") as XRController
+  const [paused, setPaused] = useState<boolean>(false);
+  // const [headset, setHeadset] = useState<any>({
+  //   position: [0, 0, 0],
+  //   quaternion: [0, 0, 0]
+  // })
+  // const headset = useController("none") as XRController
+  // const rightController = useController("right") as XRController
+  // const { controllers,  } = useXR()
   // const { inputSource } = rightController
 
-  // logger.send(JSON.stringify(inputSource))
+  
+  useFrame(({ gl, camera }) => {
+    if (gl.xr.getSession() !== null && !paused) {
+      const vector3 = new THREE.Vector3();
+      const direction = camera.getWorldDirection(vector3)
+      SERVER.send({
+        type: "coordinates",
+        position: camera.position,
+        direction: direction
+      })
+      setPaused(() => true)
+    }
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPaused(() => false)
+    }, 5000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+  
   return null;
 
   // useFrame(() => {
